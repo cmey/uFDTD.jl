@@ -1,6 +1,6 @@
 module uFDTD
 
-function main()
+function main(hard_source=false, additive_source=false, directional_source=true)
     const spatial_size = 200
     ez = zeros(Float64, spatial_size)
     hy = zeros(Float64, spatial_size)
@@ -23,6 +23,12 @@ function main()
             hy[m] = hy[m] + (ez[m + 1] - ez[m]) / imp0
         end
 
+        # Directional source
+        # Total-Field/Scattered-Field correction for Hy adjacent to TFSF boundary
+        if directional_source
+            hy[50] -= exp(-(qTime - 30.) * (qTime - 30.) / 100.) / imp0
+        end
+
         # Absorbing Boundary Condition on left side
         ez[1] = ez[2]
 
@@ -31,11 +37,22 @@ function main()
             ez[m] = ez[m] + (hy[m] - hy[m - 1]) * imp0
         end
 
-        # hardwire source node
-        # ez[0] = exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+        # Directional source
+        # Total-Field/Scattered-Field correction for Ez adjacent to TFSF boundary
+        if directional_source
+            ez[51] += exp(-(qTime + 0.5 - (-0.5) - 30.) *
+                           (qTime + 0.5 - (-0.5) - 30.) / 100.)
+        end
 
-        # additive source node
-        ez[50] += exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+        # Hardwire source on a node
+        if hard_source
+            ez[0] = exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+        end
+
+        # Additive source on a node
+        if additive_source
+            ez[50] += exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+        end
 
         # add a point (0D) probe over time
         probe0Dt[qTime] = ez[50]
