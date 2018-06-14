@@ -2,12 +2,26 @@ module uFDTD
 
 function main(hard_source=false, additive_source=false, directional_source=true)
     const spatial_size = 200
+    const maxTime = 250*4
+    const imp0 = 377.0
+
     ez = zeros(Float64, spatial_size)
     hy = zeros(Float64, spatial_size)
-    const imp0 = 377.0
+    er = zeros(Float64, spatial_size)
+
+    # setup relative permittivity
+    er_boundary_position = 100
+    er_material_value = 9
+    for m = 1:spatial_size
+        if m < er_boundary_position
+            er[m] = 1.0
+        else
+            er[m] = er_material_value
+        end
+    end
+
     m = 0
     qTime = 0
-    const maxTime = 250*4
 
     probe0Dt = zeros(Float64, maxTime)
     probe1Dt = zeros(Float64, (spatial_size, maxTime))
@@ -15,7 +29,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     # do time stepping
     for qTime = 1:maxTime
 
-        # Absorbing Boundary Condition on right side
+        # Absorbing Boundary Condition on right side (works only when local Sc=1)
         hy[spatial_size] = hy[spatial_size-1]
 
         # update magnetic field
@@ -34,7 +48,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
 
         # update electric field
         for m = 2:spatial_size
-            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * imp0
+            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * imp0 / er[m]
         end
 
         # Directional source
