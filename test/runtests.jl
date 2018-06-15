@@ -5,5 +5,9 @@ else
     using Test
 end
 
-# write your own tests here
-@test 1 == 2
+function smoke_test()
+    # run a simulation
+    p0, p1 = uFDTD.main()
+end
+
+smoke_test()
