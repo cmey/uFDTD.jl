@@ -1,15 +1,23 @@
 # uFDTD.jl
-Implementation of a simple FDTD solver
+Implementation of a simple FDTD solver.
+
+## Installation
+
+Until this package gets registered, do once per system:
+```
+(v1.1) pkg> dev uFDTD.jl
+```
+
+## Usage
 
 ```
-include("src/uFDTD.jl")
 using uFDTD
 
-# run simulation
+# run a simulation
 p0, p1 = uFDTD.main();
 
 # display probes
 using PyPlot
-figure(); plot(p1);
+figure(); plot(p0);
 figure(); imshow(p1); colorbar();
 ```

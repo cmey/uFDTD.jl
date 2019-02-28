@@ -1,9 +1,9 @@
 module uFDTD
 
 function main(hard_source=false, additive_source=false, directional_source=true)
-    const spatial_size = 200
-    const maxTime = 250*4
-    const imp0 = 377.0
+    spatial_size = 200
+    maxTime = 250*4
+    imp0 = 377.0
 
     ez = zeros(Float64, spatial_size)
     hy = zeros(Float64, spatial_size)
