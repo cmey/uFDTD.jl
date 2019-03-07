@@ -3,11 +3,23 @@ module uFDTD
 function main(hard_source=false, additive_source=false, directional_source=true)
     spatial_size = 200
     maxTime = 250*4
+    # e0 = 8.854e-12  # permittivity of free space [F/m] (F=Farad)
+    # Permittivity is a constant of proportionality between electric displacement
+    # and electric field intensity in a given medium.
+    # force = charge * electric field
+    # F     = Q      * E
     imp0 = 377.0
 
     ez = zeros(Float64, spatial_size)
     hy = zeros(Float64, spatial_size)
-    er = zeros(Float64, spatial_size)
+    er = zeros(Float64, spatial_size)  # relative permittivity
+    # Electric flux density D = er * e0 * E
+    # ∇ × E = 0 : Curl of electric field (∇ is the del or nabla operator)
+    # (∇f is a vector field of the df/dx df/dy etc...)
+    # (∇ × E is a vector field representing rotational displacement)
+    # ∇ · D = ρv : Divergence of electric flux density
+    # (a scalar measure of strength of source or sink)
+    # (ρv: electric charge density [C/m3])
 
     # setup relative permittivity
     er_boundary_position = 100
