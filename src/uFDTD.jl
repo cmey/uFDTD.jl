@@ -21,28 +21,24 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     # µ = µr * µ0
     # speed of light in free space: c = 1 / sqrt(ε0 * µ0)
     # Characteristic impedance of free space: η0 = sqrt(µ0 / ε0)
-    imp0 = 377.0
+    η0 = 377.0
     # Energy must no be able to propagate further than 1 spacial step: cΔt <= Δx
     # Courant number: Sc = c * Δt / Δx (we set it to 1)
 
     ez = zeros(Float64, spatial_size)  # z component of E field at a time step
     hy = zeros(Float64, spatial_size)  # y component of H field at a time step
 
-    er = zeros(Float64, spatial_size)  # material property: relative permittivity
-
-    # setup relative permittivity
-    er_boundary_position = 100
-    er_material_value = 9
+    # setup material property: relative permittivity
+    εr = zeros(Float64, spatial_size)
+    εr_boundary_position = 100
+    εr_material_value = 9
     for m = 1:spatial_size
-        if m < er_boundary_position
-            er[m] = 1.0
+        if m < εr_boundary_position
+            εr[m] = 1.0
         else
-            er[m] = er_material_value
+            εr[m] = εr_material_value
         end
     end
-
-    m = 0
-    qTime = 0
 
     probe0Dt = zeros(Float64, maxTime)
     probe1Dt = zeros(Float64, (spatial_size, maxTime))
@@ -58,13 +54,13 @@ function main(hard_source=false, additive_source=false, directional_source=true)
             # in 1D:  µ * dH/dt = dE/dx  (continuous version)
             #   µ * (H[q+1/2] - H[q-1/2]) / Δt = (E[m+1] - E[m]) / Δx  (discrete version)
             #   H[q+1/2] = H[q-1/2] + (E[m+1] - E[m]) * Δt / µΔx
-            hy[m] = hy[m] + (ez[m + 1] - ez[m]) / imp0
+            hy[m] = hy[m] + (ez[m + 1] - ez[m]) / η0
         end
 
         # Directional source
         # Total-Field/Scattered-Field correction for Hy adjacent to TFSF boundary
         if directional_source
-            hy[50] -= exp(-(qTime - 30.) * (qTime - 30.) / 100.) / imp0
+            hy[50] -= exp(-(qTime - 30.) * (qTime - 30.) / 100.) / η0
         end
 
         # Absorbing Boundary Condition on left side
@@ -75,7 +71,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
             # in 1D:  ε * dE/dt = dH/dx  (continuous version)
             #   ε * (E[q+1] - E[q]) / Δt = (H[m+1/2] - H[m-1/2]) / Δx  (discrete version)
             #   E[q+1] = E[q] + (H[m+1/2] - H[m-1/2]) * Δt / εΔx
-            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * imp0 / er[m]
+            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * η0 / εr[m]
         end
 
         # Directional source
