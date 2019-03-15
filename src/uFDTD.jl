@@ -1,9 +1,7 @@
 module uFDTD
 
 function main(hard_source=false, additive_source=false, directional_source=true)
-    spatial_size = 200
-    maxTime = 250*4
-    # ε0 = 8.85418782e-12  # permittivity of free space [F/m] (F=Farad)
+    ε0 = 8.85418782e-12  # permittivity of free space [F/m] (F=Farad)
     # ε = εr * ε0
     # Permittivity is a constant of proportionality between electric displacement
     # and electric field intensity in a given medium.
@@ -17,14 +15,15 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     # (a scalar measure of strength of source or sink)
     # (ρv: electric charge density [C/m3])
 
-    # µ0 = 4π * 1e-7 [H/m]  # permeability of free space
+    µ0 = 4π * 1e-7  # permeability of free space [H/m]
     # µ = µr * µ0
-    # speed of light in free space: c = 1 / sqrt(ε0 * µ0)
-    # Characteristic impedance of free space: η0 = sqrt(µ0 / ε0)
-    η0 = 377.0
+    η0 = sqrt(µ0 / ε0)  # Characteristic impedance of free space = ~ 377.0
+    c = 1 / sqrt(ε0 * µ0)  # speed of light in free space [m/s]
     # Energy must no be able to propagate further than 1 spacial step: cΔt <= Δx
-    # Courant number: Sc = c * Δt / Δx (we set it to 1)
+    Sc = 1  # Sc = c * Δt / Δx Courant number (we set it to 1, for now)
 
+    spatial_size = 200
+    maxTime = 250*4
     ez = zeros(Float64, spatial_size)  # z component of E field at a time step
     hy = zeros(Float64, spatial_size)  # y component of H field at a time step
 
@@ -38,6 +37,13 @@ function main(hard_source=false, additive_source=false, directional_source=true)
         else
             εr[m] = εr_material_value
         end
+    end
+
+    # setup material property: relative permeability
+    µr = zeros(Float64, spatial_size)
+    µr_material_value = 1
+    for m = 1:spatial_size
+        µr[m] = µr_material_value
     end
 
     probe0Dt = zeros(Float64, maxTime)
@@ -54,7 +60,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
             # in 1D:  µ * dH/dt = dE/dx  (continuous version)
             #   µ * (H[q+1/2] - H[q-1/2]) / Δt = (E[m+1] - E[m]) / Δx  (discrete version)
             #   H[q+1/2] = H[q-1/2] + (E[m+1] - E[m]) * Δt / µΔx
-            hy[m] = hy[m] + (ez[m + 1] - ez[m]) / η0
+            hy[m] = hy[m] + (ez[m + 1] - ez[m]) * Sc / η0 / µr[m]
         end
 
         # Directional source
@@ -71,7 +77,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
             # in 1D:  ε * dE/dt = dH/dx  (continuous version)
             #   ε * (E[q+1] - E[q]) / Δt = (H[m+1/2] - H[m-1/2]) / Δx  (discrete version)
             #   E[q+1] = E[q] + (H[m+1/2] - H[m-1/2]) * Δt / εΔx
-            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * η0 / εr[m]
+            ez[m] = ez[m] + (hy[m] - hy[m - 1]) * Sc * η0 / εr[m]
         end
 
         # Directional source
