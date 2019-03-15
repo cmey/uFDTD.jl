@@ -22,8 +22,15 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     # Energy must no be able to propagate further than 1 spacial step: cΔt <= Δx
     Sc = 1  # Sc = c * Δt / Δx Courant number (we set it to 1, for now)
 
-    spatial_size = 200
-    maxTime = 250*4
+    # Excitation function used in hard source and additive source
+    peak_time = 30.0
+    pulse_width = 10
+    gaussian_pulse(t) = exp(-((t - peak_time) / pulse_width)^2)
+
+    source_function = gaussian_pulse
+
+    spatial_size = 200  # grid
+    maxTime = 250*4  # max time evolution
     ez = zeros(Float64, spatial_size)  # z component of E field at a time step
     hy = zeros(Float64, spatial_size)  # y component of H field at a time step
 
@@ -66,7 +73,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
         # Directional source
         # Total-Field/Scattered-Field correction for Hy adjacent to TFSF boundary
         if directional_source
-            hy[50] -= exp(-(qTime - 30.) * (qTime - 30.) / 100.) / η0
+            hy[50] -= source_function(qTime) / η0
         end
 
         # Absorbing Boundary Condition on left side
@@ -89,12 +96,12 @@ function main(hard_source=false, additive_source=false, directional_source=true)
 
         # Hardwire source on a node
         if hard_source
-            ez[0] = exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+            ez[0] = source_function(qTime)
         end
 
         # Additive source on a node
         if additive_source
-            ez[50] += exp(-(qTime - 30.0) * (qTime - 30.0) / 100.0)
+            ez[50] += source_function(qTime)
         end
 
         # add a point (0D) probe over time
