@@ -7,15 +7,24 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     # and electric field intensity in a given medium.
     # force = charge * electric field
     # F     = Q      * E
-    # Electric flux density D = εr * ε0 * E
     # ∇ × E = 0 : Curl of electric field (∇ is the del or nabla operator)
     # (∇f is a vector field of the df/dx df/dy etc...)
     # (∇ × E is a vector field representing rotational displacement)
+    # Electric flux density D = ε * E
     # ∇ · D = ρv : Divergence of electric flux density
-    # (a scalar measure of strength of source or sink)
     # (ρv: electric charge density [C/m3])
-
-    µ0 = 4π * 1e-7  # permeability of free space [H/m]
+    # (a scalar measure of strength of source or sink)
+    # E = D/e = −∇V
+    # ∇²V = −ρ/e
+    # Electrical conductivity: σ
+    # Perfect electric conductors (PECs) have σ close to infinity
+    # Current density J = σE (current in material, charges moving due to E field)
+    # Charge Q moving at speed v in field B (magnetic flux density):
+    # force = charge * speed cross-product magnetic flux density
+    # F = Q * (v × B)
+    # Magnetic Field H = B / µ (ignore local effect of material on flux):
+    # B = μrμ0H = μH    (relative permeability and permeability of free space)
+    µ0 = 4π * 1e-7  # permeability of free space [H/m] (H=Henry)
     # µ = µr * µ0
     η0 = sqrt(µ0 / ε0)  # Characteristic impedance of free space = ~ 377.0
     c = 1 / sqrt(ε0 * µ0)  # speed of light in free space [m/s]
@@ -34,7 +43,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     ez = zeros(Float64, spatial_size)  # z component of E field at a time step
     hy = zeros(Float64, spatial_size)  # y component of H field at a time step
 
-    # setup material property: relative permittivity
+    # setup material property (Elec): relative permittivity
     εr = zeros(Float64, spatial_size)
     εr_boundary_position = 100
     εr_material_value = 9
@@ -46,7 +55,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
         end
     end
 
-    # setup material property: relative permeability
+    # setup material property (Mag): relative permeability
     µr = zeros(Float64, spatial_size)
     µr_material_value = 1
     for m = 1:spatial_size
