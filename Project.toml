@@ -1,8 +1,11 @@
 name = "uFDTD"
 uuid = "1d7c8afc-fa02-5590-8483-a018f81ec05a"
 
-[deps]
+[compat]
+julia = "1"
+
+[extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-[compat]
-julia = "≥ 0.7.0"
+[targets]
+test = ["Test"]
