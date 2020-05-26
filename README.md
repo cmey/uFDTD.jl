@@ -1,5 +1,5 @@
 # uFDTD.jl
-Implementation of a simple FDTD solver.
+Implementation of a simple FDTD solver, based on [*Understanding the Finite-Difference Time-Domain Method*, John B. Schneider](https://www.eecs.wsu.edu/~schneidj/ufdtd/).
 
 ## Installation
 
