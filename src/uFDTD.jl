@@ -30,6 +30,7 @@ function main(hard_source=false, additive_source=false, directional_source=true)
     c = 1 / sqrt(ε0 * µ0)  # speed of light in free space [m/s]
     # Energy must no be able to propagate further than 1 spacial step: cΔt <= Δx
     Sc = 1  # Sc = c * Δt / Δx Courant number (we set it to 1, for now)
+    # More generally: Δt must be <= 1/(c*sqrt(1/Δx^2 + 1/Δy^2 + 1/Δz^2))
 
     # Excitation function used in hard source and additive source
     peak_time = 30.0
