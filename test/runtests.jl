@@ -6,8 +6,7 @@ else
 end
 
 function smoke_test()
-    # run a simulation
-    p0, p1 = uFDTD.main()
+    include("../src/main.jl")
 end
 
 smoke_test()

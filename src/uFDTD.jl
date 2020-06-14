@@ -1,6 +1,29 @@
 module uFDTD
 
-function main(hard_source=false, additive_source=false, directional_source=true)
+using Parameters
+
+export uFDTDParameters
+
+"""
+    uFDTDParameters
+
+    Configuration for the simulation.
+"""
+@with_kw struct uFDTDParameters
+    # Spatial grid size.
+    spatial_size::Int = 200  # [cells] square
+    # Max time evolution.
+    max_time_steps::Int = 250*4  # [steps]
+end
+
+"""
+    simulate(sim_params::uFDTDParameters, hard_source=false, additive_source=false, directional_source=true)
+
+    Run the simulation.
+"""
+function simulate(sim_params::uFDTDParameters, hard_source=false, additive_source=false, directional_source=true)
+    @unpack spatial_size, max_time_steps = sim_params
+
     ε0 = 8.85418782e-12  # permittivity of free space [F/m] (F=Farad)
     # ε = εr * ε0
     # Permittivity is a constant of proportionality between electric displacement
@@ -39,8 +62,6 @@ function main(hard_source=false, additive_source=false, directional_source=true)
 
     source_function = gaussian_pulse
 
-    spatial_size = 200  # grid
-    maxTime = 250*4  # max time evolution
     ez = zeros(Float64, spatial_size)  # z component of E field at a time step
     hy = zeros(Float64, spatial_size)  # y component of H field at a time step
 
@@ -63,11 +84,11 @@ function main(hard_source=false, additive_source=false, directional_source=true)
         µr[m] = µr_material_value
     end
 
-    probe0Dt = zeros(Float64, maxTime)
-    probe1Dt = zeros(Float64, (spatial_size, maxTime))
+    probe0Dt = zeros(Float64, max_time_steps)
+    probe1Dt = zeros(Float64, (spatial_size, max_time_steps))
 
     # Do time stepping, leap-frog method (update H then E)
-    for qTime = 1:maxTime
+    for qTime = 1:max_time_steps
 
         # Absorbing Boundary Condition on right side (works only when local Sc=1)
         hy[spatial_size] = hy[spatial_size-1]

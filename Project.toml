@@ -1,5 +1,10 @@
 name = "uFDTD"
 uuid = "1d7c8afc-fa02-5590-8483-a018f81ec05a"
+author = ["Christophe Meyer <christophe.meyer.pro@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 
 [compat]
 julia = "1"

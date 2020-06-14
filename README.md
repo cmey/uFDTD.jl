@@ -19,8 +19,11 @@ Until this package gets registered, you cannot simply do `pkg> add uFDTD`. Inste
 ```julia
 using uFDTD
 
-# run a simulation
-p0, p1 = uFDTD.main();
+# Define simulation parameters (use many default values, see uFDTDParameters).
+sim_params = uFDTDParameters()
+
+# Run simulation.
+p0, p1 = uFDTD.simulate(sim_params)
 
 # display probes
 using PyPlot
