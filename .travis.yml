@@ -10,20 +10,21 @@ julia:
   - 1.4
   - nightly
 
+allow_failures:
+  - julia: nightly
+
 #script: # the default script is equivalent to the following
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 #  - julia --project -e 'using Pkg; Pkg.build(); Pkg.test(; coverage=true)';
 
 jobs:
-  allow_failures:
-    - julia: nightly
   include:
     - stage: "Documentation"
       julia: 1.4
       os: linux
       script:
-        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
-                                    Pkg.develop(PackageSpec(path=pwd()))'
+        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+                                               Pkg.instantiate();'
         - julia --project=docs/ docs/make.jl
       after_success: skip
 
