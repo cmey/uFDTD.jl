@@ -33,11 +33,13 @@ function simulate(sim_params::uFDTDParameters, hard_source=false, additive_sourc
     # ∇ × E = 0 : Curl of electric field (∇ is the del or nabla operator)
     # (∇f is a vector field of the df/dx df/dy etc...)
     # (∇ × E is a vector field representing rotational displacement)
-    # Electric flux density D = ε * E
+
+    # Electric flux density
+    # D = ε * E
+    # E = D/ε  (= −∇V)
     # ∇ · D = ρv : Divergence of electric flux density
     # (ρv: electric charge density [C/m3])
     # (a scalar measure of strength of source or sink)
-    # E = D/e = −∇V
     # ∇²V = −ρ/e
     # Electrical conductivity: σ
     # Perfect electric conductors (PECs) have σ close to infinity
@@ -45,13 +47,16 @@ function simulate(sim_params::uFDTDParameters, hard_source=false, additive_sourc
     # Charge Q moving at speed v in field B (magnetic flux density):
     # force = charge * speed cross-product magnetic flux density
     # F = Q * (v × B)
-    # Magnetic Field H = B / µ (ignore local effect of material on flux):
+
+    # Magnetic Field
+    # H = B / µ     (ignore local effect of material on flux):
     # B = μrμ0H = μH    (relative permeability and permeability of free space)
     µ0 = 4π * 1e-7  # permeability of free space [H/m] (H=Henry)
     # µ = µr * µ0
     η0 = sqrt(µ0 / ε0)  # Characteristic impedance of free space = ~ 377.0
+
+    # Energy must no be able to propagate further than 1 spatial step: cΔt <= Δx
     c = 1 / sqrt(ε0 * µ0)  # speed of light in free space [m/s]
-    # Energy must no be able to propagate further than 1 spacial step: cΔt <= Δx
     Sc = 1  # Sc = c * Δt / Δx Courant number (we set it to 1, for now)
     # More generally: Δt must be <= 1/(c*sqrt(1/Δx^2 + 1/Δy^2 + 1/Δz^2))
 
@@ -95,7 +100,7 @@ function simulate(sim_params::uFDTDParameters, hard_source=false, additive_sourc
 
         # Advance/update the Magnetic field
         for m = 1:spatial_size-1
-            # in 1D:  µ * dH/dt = dE/dx  (continuous version)
+            # Maxwell-Faraday, in 1D:  µ * dH/dt = dE/dx  (continuous version)
             #   µ * (H[q+1/2] - H[q-1/2]) / Δt = (E[m+1] - E[m]) / Δx  (discrete version)
             #   H[q+1/2] = H[q-1/2] + (E[m+1] - E[m]) * Δt / µΔx
             hy[m] = hy[m] + (ez[m + 1] - ez[m]) * Sc / η0 / µr[m]
@@ -112,7 +117,7 @@ function simulate(sim_params::uFDTDParameters, hard_source=false, additive_sourc
 
         # Advance/update the Electric field
         for m = 2:spatial_size
-            # in 1D:  ε * dE/dt = dH/dx  (continuous version)
+            # Maxwell-Ampère, in 1D:  ε * dE/dt = dH/dx  (continuous version)
             #   ε * (E[q+1] - E[q]) / Δt = (H[m+1/2] - H[m-1/2]) / Δx  (discrete version)
             #   E[q+1] = E[q] + (H[m+1/2] - H[m-1/2]) * Δt / εΔx
             ez[m] = ez[m] + (hy[m] - hy[m - 1]) * Sc * η0 / εr[m]

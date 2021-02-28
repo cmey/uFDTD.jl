@@ -17,7 +17,7 @@ Start julia with `julia --project=.` from inside this git repo.
 
 Until this package gets registered, you cannot simply do `pkg> add uFDTD`. Instead, activate your environment and do once per system:
 ```julia
-(scratch) pkg> develop --local ~/path/to/uFDTD.jl
+(scratch) pkg> develop --local ~/path/to/uFDTD.jl  # (the package, not the file)
 ```
 
 ## Usage
