@@ -5,7 +5,7 @@ Implementation of a simple FDTD solver, based on [*Understanding the Finite-Diff
 
 | macOS | Linux | Windows |
 |-------|-------|---------|
-|[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/cmey/uFDTD.jl/branches/master/2)](https://travis-ci.org/cmey/uFDTD.jl)|[![Build Status](https://travis-matrix-badges.herokuapp.com/repos/cmey/uFDTD.jl/branches/master/1)](https://travis-ci.org/cmey/uFDTD.jl)|[![Build status](https://ci.appveyor.com/api/projects/status/8asn340ovfwurmqf?svg=true)](https://ci.appveyor.com/project/cmey/ufdtd-jl)|
+|[![Build Status](https://app.travis-ci.com/cmey/uFDTD.jl.svg?branch=master)](https://app.travis-ci.com/github/cmey/uFDTD.jl)|[![Build Status](https://app.travis-ci.com/cmey/uFDTD.jl.svg?branch=master)](https://app.travis-ci.com/github/cmey/uFDTD.jl)|[![Build status](https://ci.appveyor.com/api/projects/status/8asn340ovfwurmqf?svg=true)](https://ci.appveyor.com/project/cmey/ufdtd-jl)|
 
 ## Setup
 
