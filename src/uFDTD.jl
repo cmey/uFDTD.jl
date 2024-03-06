@@ -55,7 +55,7 @@ function simulate(sim_params::uFDTDParameters, hard_source=false, additive_sourc
     # µ = µr * µ0
     η0 = sqrt(µ0 / ε0)  # Characteristic impedance of free space = ~ 377.0
 
-    # Energy must no be able to propagate further than 1 spatial step: cΔt <= Δx
+    # Energy must not be able to propagate further than 1 spatial step: cΔt <= Δx
     c = 1 / sqrt(ε0 * µ0)  # speed of light in free space [m/s]
     Sc = 1  # Sc = c * Δt / Δx Courant number (we set it to 1, for now)
     # More generally: Δt must be <= 1/(c*sqrt(1/Δx^2 + 1/Δy^2 + 1/Δz^2))

@@ -32,9 +32,15 @@ sim_params = uFDTDParameters()
 p0, p1 = uFDTD.simulate(sim_params)
 
 # display probes
-using PyPlot
-figure(); plot(p0);
-figure(); imshow(p1); colorbar();
+using GLMakie
+#   0D+t probe:
+display(GLMakie.Screen(), lines(p0))
+#   1D+t probe:
+fig2d = Figure()
+ax = Axis(fig2d[1, 1])
+hm = heatmap!(ax, p1)
+Colorbar(fig2d[1, 2], hm)
+display(GLMakie.Screen(), fig2d)
 ```
 
 ## Tests
