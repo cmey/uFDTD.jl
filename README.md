@@ -1,17 +1,17 @@
 # uFDTD.jl
+
 Implementation of a simple FDTD solver, based on [*Understanding the Finite-Difference Time-Domain Method*, John B. Schneider](https://www.eecs.wsu.edu/~schneidj/ufdtd/).
 
 ## Package status
 
-| macOS | Linux | Windows |
-|-------|-------|---------|
-|[![Build Status](https://app.travis-ci.com/cmey/uFDTD.jl.svg?branch=master)](https://app.travis-ci.com/github/cmey/uFDTD.jl)|[![Build Status](https://app.travis-ci.com/cmey/uFDTD.jl.svg?branch=master)](https://app.travis-ci.com/github/cmey/uFDTD.jl)|[![Build status](https://ci.appveyor.com/api/projects/status/8asn340ovfwurmqf?svg=true)](https://ci.appveyor.com/project/cmey/ufdtd-jl)|
+![CI status](https://github.com/cmey/uFDTD.jl/actions/workflows/ci.yml/badge.svg)
 
-## Setup
+## Installation
 
-### To run code in the package directly
-
-Start julia with `julia --project=.` from inside this git repo.
+Until this package gets registered, open the Julia environment from inside the package folder:
+```
+julia --project=.
+```
 
 ### To setup this package as a library in your own code
 
@@ -31,7 +31,7 @@ sim_params = uFDTDParameters()
 # Run simulation.
 p0, p1 = uFDTD.simulate(sim_params)
 
-# display probes
+# Display probes.
 using GLMakie
 #   0D+t probe:
 display(GLMakie.Screen(), lines(p0))
